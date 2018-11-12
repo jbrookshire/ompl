@@ -174,7 +174,7 @@ ompl::geometric::VFRRT::Motion *ompl::geometric::VFRRT::extendTree(Motion *m, ba
     {
         auto *motion = new Motion(si_);
         motion->state = newState;
-        motion->parent = m;
+        motion->setParent(m);
         updateExplorationEfficiency(motion);
         nn_->add(motion);
         return motion;
@@ -279,7 +279,7 @@ ompl::base::PlannerStatus ompl::geometric::VFRRT::solve(const base::PlannerTermi
         while (solution != nullptr)
         {
             mpath.push_back(solution);
-            solution = solution->parent;
+            solution = solution->getParent();
         }
 
         // Set the solution path

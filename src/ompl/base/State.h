@@ -80,6 +80,8 @@ namespace ompl
 
                 return static_cast<T *>(this);
             }
+
+            virtual void connect(const State* parent) {};
         };
 
         /** \brief Definition of a compound state */

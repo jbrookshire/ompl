@@ -152,7 +152,7 @@ ompl::base::PlannerStatus ompl::geometric::RRT::solve(const base::PlannerTermina
             /* create a motion */
             auto *motion = new Motion(si_);
             si_->copyState(motion->state, dstate);
-            motion->parent = nmotion;
+            motion->setParent(nmotion);
 
             nn_->add(motion);
             double dist = 0.0;
@@ -188,7 +188,7 @@ ompl::base::PlannerStatus ompl::geometric::RRT::solve(const base::PlannerTermina
         while (solution != nullptr)
         {
             mpath.push_back(solution);
-            solution = solution->parent;
+            solution = solution->getParent();
         }
 
         /* set the solution path */
@@ -222,9 +222,9 @@ void ompl::geometric::RRT::getPlannerData(base::PlannerData &data) const
 
     for (auto &motion : motions)
     {
-        if (motion->parent == nullptr)
+      if (motion->getParent() == nullptr)
             data.addStartVertex(base::PlannerDataVertex(motion->state));
         else
-            data.addEdge(base::PlannerDataVertex(motion->parent->state), base::PlannerDataVertex(motion->state));
+          data.addEdge(base::PlannerDataVertex(motion->getParent()->state), base::PlannerDataVertex(motion->state));
     }
 }

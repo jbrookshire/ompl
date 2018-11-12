@@ -342,7 +342,9 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
             // Finding the nearest neighbor to connect to
             // By default, neighborhood states are sorted by cost, and collision checking
             // is performed in increasing order of cost
-            if (delayCC_)
+            // JON: we chose the nearest parent in terms of state distance,
+            //      but other neighbors might have lower cost.
+            if (delayCC_) //JON: true 
             {
                 // calculate all costs and distances
                 for (std::size_t i = 0; i < nbh.size(); ++i)
@@ -370,6 +372,8 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
                 {
                     if (nbh[*i] == nmotion || si_->checkMotion(nbh[*i]->state, motion->state))
                     {
+                      //JON: we're searching the neighbors in order of increasing cost
+                      // for one with a valid transition
                         motion->incCost = incCosts[*i];
                         motion->cost = costs[*i];
                         motion->parent = nbh[*i];
@@ -413,7 +417,7 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
                 }
             }
 
-            if (useNewStateRejection_)
+            if (useNewStateRejection_) //JON: false
             {
                 if (opt_->isCostBetterThan(solutionHeuristic(motion), bestCost_))
                 {
@@ -434,6 +438,8 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
                 motion->parent->children.push_back(motion);
             }
 
+            //JON: here we determine if any neighbors are better connected
+            //  to the new state
             bool checkForSolution = false;
             for (std::size_t i = 0; i < nbh.size(); ++i)
             {
@@ -519,9 +525,9 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
 
                 if (updatedSolution)
                 {
-                    if (useTreePruning_)
+                  if (useTreePruning_) //JON: false
                     {
-                        pruneTree(bestCost_);
+                      pruneTree(bestCost_); //JON: need to be careful here, what about negative costs!!
                     }
 
                     if (intermediateSolutionCallback)

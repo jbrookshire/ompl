@@ -143,6 +143,15 @@ namespace ompl
                 /** \brief The state contained by the motion */
                 base::State *state;
 
+                void setParent(Motion* newparent) {
+                  state->connect(newparent->state);
+                  parent = newparent;
+                }
+
+                Motion* getParent() {
+                  return parent;
+                }
+            private:
                 /** \brief The parent motion in the exploration tree */
                 Motion *parent;
             };
